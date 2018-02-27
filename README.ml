@@ -1,4 +1,4 @@
 Whipple Logsheet Database
 =========================
 
-The Whipple log-sheet database code written by Stephen Fegan ca 2000
+The Whipple 10m log-sheet database code written by Stephen Fegan ca 2000
