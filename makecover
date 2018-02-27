@@ -1,0 +1,12 @@
+#!/bin/bash
+num=$1
+echo Makeing cover for archive $num
+./makecdcover.pl $num > ../covers/$num.tex
+cd ../covers
+latex $num
+dvips -tletter $num -o
+lpr $num.ps
+lpr $num.ps
+rm -f $num.aux $num.dvi $num.log
+gzip $num.tex
+gzip $num.ps

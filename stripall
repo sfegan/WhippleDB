@@ -1,0 +1,7 @@
+#!/bin/tcsh
+foreach file ( cdinfo/cd.*.dat )
+	set f=$file:t
+	echo $f
+	set number=`echo $f:t | cut -d'.' -f 2`
+	perl stripinfo.pl $number > cdinfo/sql.$number
+end

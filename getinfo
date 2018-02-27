@@ -1,0 +1,10 @@
+#!/bin/bash
+DEV=cdrom
+eject -t /dev/$DEV
+sleep 2
+mount /mnt/$DEV
+find /mnt/$DEV -type f -ls -exec md5sum \{\} \; 2>&1 | tee cdinfo/cd.$1.dat
+umount /mnt/$DEV
+sleep 2
+eject /dev/$DEV
+perl stripinfo.pl $1 > cdinfo/sql.$1

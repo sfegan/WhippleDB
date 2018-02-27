@@ -1,0 +1,675 @@
+Whipple/ApacheHandlers/Catalog.pm:    my $db_rinfo=$db->RunInfo;
+Whipple/ApacheHandlers/Catalog.pm:    if((not($db_rinfo->source_catalog())) and ($db_rinfo->err))
+Whipple/ApacheHandlers/Catalog.pm:	my $err=$db_rinfo->errstr;
+Whipple/ApacheHandlers/Catalog.pm:	$r->log_error("Catalog::handler: error getting source catalog:".$err);
+Whipple/ApacheHandlers/Catalog.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Catalog.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Catalog.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Catalog.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Catalog.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Catalog.pm:    $db->commit;
+Whipple/ApacheHandlers/Catalog.pm:    while(defined($row=$db_rinfo->fetchrow_hashref))
+Whipple/ApacheHandlers/Catalog.pm:    my $span=int(($nfields+$COLUMNS-1)/$COLUMNS);
+Whipple/ApacheHandlers/Catalog.pm:		 '<TD>',escape_html($results[$el]->{"source_id"}),'</TD>',
+Whipple/ApacheHandlers/Catalog.pm:		 '<TD>',escape_html($results[$el]->{"source_name"}),'</TD>',
+Whipple/ApacheHandlers/Catalog.pm:		 '<TD>',escape_html($results[$el]->{"count"}),'</TD>',
+Whipple/ApacheHandlers/Catalog.pm:		 '<TD>',escape_html(sprintf("%.2f",$results[$el]->{"duration"}/60)),'</TD>');
+Whipple/ApacheHandlers/Catalog.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Catalog.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Catalog.pm:    $r->print(whipple_page(-title   => "Source catalog",
+Whipple/ApacheHandlers/Catalog.pm:			   -body    => $HTML));
+Whipple/ApacheHandlers/Coordinates.pm:    my $p=$dms>0?'+':'-';
+Whipple/ApacheHandlers/Coordinates.pm:    my $A = $a->{$sort_field};
+Whipple/ApacheHandlers/Coordinates.pm:    my $B = $b->{$sort_field};
+Whipple/ApacheHandlers/Coordinates.pm:      ( $A =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ ) &&
+Whipple/ApacheHandlers/Coordinates.pm:	( $B =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ );
+Whipple/ApacheHandlers/Coordinates.pm:    my $result = $db->SourceCatalog->select_all;
+Whipple/ApacheHandlers/Coordinates.pm:    if((not($result)) and ($db->SourceCatalog->err))
+Whipple/ApacheHandlers/Coordinates.pm:	my $err=$db->SourceCatalog->errstr;
+Whipple/ApacheHandlers/Coordinates.pm:	$r->log_error("coordianates handler: error getting results: ".$err);
+Whipple/ApacheHandlers/Coordinates.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Coordinates.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Coordinates.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Coordinates.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Coordinates.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Coordinates.pm:    $db->commit;
+Whipple/ApacheHandlers/Coordinates.pm:      while(defined($row=$db->SourceCatalog->fetchrow_hashref));
+Whipple/ApacheHandlers/Coordinates.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Coordinates.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Coordinates.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Coordinates.pm:			    whipple_page(-title   => "No Results",
+Whipple/ApacheHandlers/Coordinates.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Coordinates.pm:	   ( exists $rows[0]->{$form_fields{"sort_field"}} ));
+Whipple/ApacheHandlers/Coordinates.pm:	my @Fields=("", "", "-", "-", "-");
+Whipple/ApacheHandlers/Coordinates.pm:	$Fields[0] = $entry->{"source_id"};
+Whipple/ApacheHandlers/Coordinates.pm:	$Fields[1] = $entry->{"source_name"};
+Whipple/ApacheHandlers/Coordinates.pm:	$Fields[2] = hms($entry->{"right_ascention"})
+Whipple/ApacheHandlers/Coordinates.pm:	  if ( defined $entry->{"right_ascention"} );
+Whipple/ApacheHandlers/Coordinates.pm:	$Fields[3] = dms($entry->{"declination"})
+Whipple/ApacheHandlers/Coordinates.pm:	  if ( defined $entry->{"declination"} );
+Whipple/ApacheHandlers/Coordinates.pm:	$Fields[4] = $entry->{"epoch"}
+Whipple/ApacheHandlers/Coordinates.pm:	  if ( defined $entry->{"epoch"} );
+Whipple/ApacheHandlers/Coordinates.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Coordinates.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Coordinates.pm:    $r->print(whipple_page(-title   => "Source Coordinates Table",
+Whipple/ApacheHandlers/Coordinates.pm:			   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:    if($db_search->select_suid($sid,$uid) != 1)
+Whipple/ApacheHandlers/Search.pm:	if($db_search->err)
+Whipple/ApacheHandlers/Search.pm:	    my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("run_search: could not find search sid=".$sid);
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("run_search: database returned ".$err);
+Whipple/ApacheHandlers/Search.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:				whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:					     -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	    $db->commit;
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Not Found",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    $row=$db_search->fetchrow_hashref;
+Whipple/ApacheHandlers/Search.pm:  my $ncount=$db->SearchResults->count($uid);
+Whipple/ApacheHandlers/Search.pm:  if(($ncount == 0)and($db->SearchResults->err))
+Whipple/ApacheHandlers/Search.pm:      my $err=$db->SearchResults->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("list_searches: database error ".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:  while($row=$db->SearchResults->fetchrow_hashref)
+Whipple/ApacheHandlers/Search.pm:      $search_results_count{$row->{"search_id"}} = $row->{"count"};
+Whipple/ApacheHandlers/Search.pm:  my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:  my $nsearch=$db_search->select_uid($uid);
+Whipple/ApacheHandlers/Search.pm:  if(($nsearch == 0)and($db_search->err))
+Whipple/ApacheHandlers/Search.pm:      my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("list_searches: database error ".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:      while($row=$db_search->fetchrow_hashref)
+Whipple/ApacheHandlers/Search.pm:	  push(@name_bits,'<I>') if($row->{"save"} ne SQLTRUE);
+Whipple/ApacheHandlers/Search.pm:	       '<A href="'.$searchpath."/run/".$row->{"search_id"}.'">',
+Whipple/ApacheHandlers/Search.pm:	       escape_html($row->{"search_name"}),'</A>');
+Whipple/ApacheHandlers/Search.pm:	  push(@HTML,'</I>') if($row->{"save"} ne SQLTRUE);
+Whipple/ApacheHandlers/Search.pm:	  push(@Fields,'['.$search_results_count{$row->{"search_id"}}.']')
+Whipple/ApacheHandlers/Search.pm:	    if(exists $search_results_count{$row->{"search_id"}});
+Whipple/ApacheHandlers/Search.pm:	    unless(exists $search_results_count{$row->{"search_id"}});
+Whipple/ApacheHandlers/Search.pm:	       '<A href="'.$searchpath."/export/".$row->{"search_id"}.
+Whipple/ApacheHandlers/Search.pm:	    if((exists($search_results_count{$row->{"search_id"}})) and
+Whipple/ApacheHandlers/Search.pm:	       ($search_results_count{$row->{"search_id"}} > 100));
+Whipple/ApacheHandlers/Search.pm:	       '<A href="'.$searchpath."/export/".$row->{"search_id"}.
+Whipple/ApacheHandlers/Search.pm:	    if((exists($search_results_count{$row->{"search_id"}})) and
+Whipple/ApacheHandlers/Search.pm:	       ($search_results_count{$row->{"search_id"}} <= 100));
+Whipple/ApacheHandlers/Search.pm:	    unless(exists $search_results_count{$row->{"search_id"}});
+Whipple/ApacheHandlers/Search.pm:	       '<A href="'.$searchpath."/export/".$row->{"search_id"}.
+Whipple/ApacheHandlers/Search.pm:	    if(exists($search_results_count{$row->{"search_id"}}));
+Whipple/ApacheHandlers/Search.pm:	    unless(exists $search_results_count{$row->{"search_id"}});
+Whipple/ApacheHandlers/Search.pm:	  push(@Fields,escape_html(substr($row->{"time_stamp"},0,19)));
+Whipple/ApacheHandlers/Search.pm:  $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:  $r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:  $r->print(whipple_page(-title   => "Search: create or review",
+Whipple/ApacheHandlers/Search.pm:			 -body    => join("\n",@HTML)));
+Whipple/ApacheHandlers/Search.pm:  my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:  if($db_search->select_nextid != 1)
+Whipple/ApacheHandlers/Search.pm:      my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("new_search: could not get next search id");
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("new_search: database returned ".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,whipple_page(-title   => "Not Found",
+Whipple/ApacheHandlers/Search.pm:						    -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:  my $row=$db_search->fetchrow_arrayref;
+Whipple/ApacheHandlers/Search.pm:  my $sid=$row->[0];
+Whipple/ApacheHandlers/Search.pm:  if(not $db_search->insert_simple($sid,$uid,
+Whipple/ApacheHandlers/Search.pm:      my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("new_search: could not insert new search: sid=".$sid);
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("new_search: database returned ".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:  my @pathcpts=grep { $_ ne "" } split "/",$r->path_info;
+Whipple/ApacheHandlers/Search.pm:  $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:  $r->headers_out->add("Location",$searchpath."/run/".$sid);
+Whipple/ApacheHandlers/Search.pm:	my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:	if((not $db_search->delete_suid($sid,$uid)) and
+Whipple/ApacheHandlers/Search.pm:	   ( $db_search->err))
+Whipple/ApacheHandlers/Search.pm:	    my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("del_search: could not delete sid=".$sid);
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("del_search: database returned ".$err);
+Whipple/ApacheHandlers/Search.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:				whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:					     -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:	$db->SearchResults->delete_sid($sid);
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:	$db->SearchTerm->delete_sid($sid);
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:    $r->headers_out->add("Location",$searchpath);
+Whipple/ApacheHandlers/Search.pm:"desc"    => 'First Date (yyyy-mm-dd)',
+Whipple/ApacheHandlers/Search.pm:"desc"    => "Final Date (yyyy-mm-dd)",
+Whipple/ApacheHandlers/Search.pm:  my $search_opers=$db->Descriptor->get("Search_Term_OP");
+Whipple/ApacheHandlers/Search.pm:  my $search_field=$db->Descriptor->get("Search_Term_Field");
+Whipple/ApacheHandlers/Search.pm:  my $db_term=$db->SearchTerm;
+Whipple/ApacheHandlers/Search.pm:  if((not $db_term->select_sid($sid)) and ($db_term->err))
+Whipple/ApacheHandlers/Search.pm:      my $err=$db_term->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("generate_criteria_form: database returned error".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  while(defined($row=$db_term->fetchrow_hashref))
+Whipple/ApacheHandlers/Search.pm:      my $cfieldcode=$row->{"field"};
+Whipple/ApacheHandlers/Search.pm:      my $copcode=$row->{"op_code"};
+Whipple/ApacheHandlers/Search.pm:      my $cvalue=$row->{"value_rep"};
+Whipple/ApacheHandlers/Search.pm:      my $cnullcode=$row->{"includenulls"};
+Whipple/ApacheHandlers/Search.pm:      my $cfield=$search_field->Val($cfieldcode);
+Whipple/ApacheHandlers/Search.pm:      my $cop=$search_opers->Val($copcode);
+Whipple/ApacheHandlers/Search.pm:	  my $ffield=$F->{"field"};
+Whipple/ApacheHandlers/Search.pm:	  my $fops=$F->{"op"};
+Whipple/ApacheHandlers/Search.pm:		  $criteria{$F->{"id"}} = [$cvalue,$cop,$cnullcode];
+Whipple/ApacheHandlers/Search.pm:      my $id=$F->{"id"};
+Whipple/ApacheHandlers/Search.pm:      my $label=$F->{"desc"};
+Whipple/ApacheHandlers/Search.pm:      my $ops=$F->{"op"};
+Whipple/ApacheHandlers/Search.pm:      my $nulls=(exists $F->{"null"})?$F->{"null"}:SQLFALSE;
+Whipple/ApacheHandlers/Search.pm:      $vals=$F->{"options"} if ( exists $F->{"options"} );
+Whipple/ApacheHandlers/Search.pm:      $zval=$F->{"zeroval"} if ( exists $F->{"zeroval"} );
+Whipple/ApacheHandlers/Search.pm:      $zop=$F->{"op"} if ( (exists $F->{"op"}) and (not ref $F->{"op"}) );
+Whipple/ApacheHandlers/Search.pm:      $zop=$F->{"op"}->[0] if ( (exists $F->{"op"}) and (ref $F->{"op"}) );
+Whipple/ApacheHandlers/Search.pm:	  $val=$criteria{$id}->[0];
+Whipple/ApacheHandlers/Search.pm:	  $op=$criteria{$id}->[1];
+Whipple/ApacheHandlers/Search.pm:	  $incnull=$criteria{$id}->[2];
+Whipple/ApacheHandlers/Search.pm:	  $size = $F->{"size"} if (exists $F->{"size"});
+Whipple/ApacheHandlers/Search.pm:  my $search_opers=$db->Descriptor->get("Search_Term_OP");
+Whipple/ApacheHandlers/Search.pm:  my $search_field=$db->Descriptor->get("Search_Term_Field");
+Whipple/ApacheHandlers/Search.pm:  my $db_term=$db->SearchTerm;
+Whipple/ApacheHandlers/Search.pm:  $db_term->delete_sid($sid);
+Whipple/ApacheHandlers/Search.pm:      my $id=$F->{"id"};
+Whipple/ApacheHandlers/Search.pm:      $def_val=$F->{"zeroval"} if ( exists $F->{"zeroval"} );
+Whipple/ApacheHandlers/Search.pm:      my $def_op=$F->{"op"};
+Whipple/ApacheHandlers/Search.pm:      $def_op=$def_op->[0] if ( ref $def_op );
+Whipple/ApacheHandlers/Search.pm:      $allownull=$F->{"null"} if ( exists $F->{"null"} );
+Whipple/ApacheHandlers/Search.pm:	 ((ref $F->{"op"}) and (not exists $form_fields{$id."_op"})))
+Whipple/ApacheHandlers/Search.pm:	  $db->rollback;
+Whipple/ApacheHandlers/Search.pm:	  $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	  $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	  $r->custom_response(HTTP_BAD_REQUEST,
+Whipple/ApacheHandlers/Search.pm:			      whipple_page(-title   => "Invalid form",
+Whipple/ApacheHandlers/Search.pm:					   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:      $op=$form_fields{$id."_op"} if (ref $F->{"op"});
+Whipple/ApacheHandlers/Search.pm:      my $opcode=$search_opers->ID($op);
+Whipple/ApacheHandlers/Search.pm:      my $fieldcode=$search_field->ID($F->{"field"});
+Whipple/ApacheHandlers/Search.pm:#      $r->warn(join(",","Insert SC: ".$sid,$termid+1,$fieldcode,
+Whipple/ApacheHandlers/Search.pm:	 (not $db_term->insert($sid,++$termid,$fieldcode,
+Whipple/ApacheHandlers/Search.pm:	  my $err=$db_term->errstr;
+Whipple/ApacheHandlers/Search.pm:	  $r->log_error("parse_search_form: database returned error".$err);
+Whipple/ApacheHandlers/Search.pm:	  $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	  $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	  $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			      whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:					   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	  $db->rollback;
+Whipple/ApacheHandlers/Search.pm:  $db->Search->update_stamp_suid($sid,$uid);
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:      $db->SearchResults->delete_sid($sid);
+Whipple/ApacheHandlers/Search.pm:      if($db->SearchResults->err)
+Whipple/ApacheHandlers/Search.pm:	  my $err=$db_term->errstr;
+Whipple/ApacheHandlers/Search.pm:	  $r->log_error("parse_search_form: database returned error ".
+Whipple/ApacheHandlers/Search.pm:	  $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	  $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	  $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			      whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:					   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	  $db->rollback;
+Whipple/ApacheHandlers/Search.pm:      $db->commit;
+Whipple/ApacheHandlers/Search.pm:  my $codes_mo=$db->Descriptor->get("Mode_Codes");
+Whipple/ApacheHandlers/Search.pm:  my $search_opers=$db->Descriptor->get("Search_Term_OP");
+Whipple/ApacheHandlers/Search.pm:  my $search_field=$db->Descriptor->get("Search_Term_Field");
+Whipple/ApacheHandlers/Search.pm:  my $db_term=$db->SearchTerm;
+Whipple/ApacheHandlers/Search.pm:  if((not $db_term->select_sid($sid)) and ($db_term->err))
+Whipple/ApacheHandlers/Search.pm:      my $err=$db_term->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("compile_search: database returned error".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  while(defined($row=$db_term->fetchrow_hashref))
+Whipple/ApacheHandlers/Search.pm:      my $cfieldcode=$row->{"field"};
+Whipple/ApacheHandlers/Search.pm:      my $copcode=$row->{"op_code"};
+Whipple/ApacheHandlers/Search.pm:      my $cvalue=$row->{"value_rep"};
+Whipple/ApacheHandlers/Search.pm:      my $cnullcode=$row->{"includenulls"};
+Whipple/ApacheHandlers/Search.pm:      my $cfield=$search_field->Val($cfieldcode);
+Whipple/ApacheHandlers/Search.pm:      my $cop=$search_opers->Val($copcode);
+Whipple/ApacheHandlers/Search.pm:	  my $ffield=$F->{"field"};
+Whipple/ApacheHandlers/Search.pm:	  my $fops=$F->{"op"};
+Whipple/ApacheHandlers/Search.pm:		  $fzero=$F->{"zeroval"} if ( exists $F->{"zeroval"} );
+Whipple/ApacheHandlers/Search.pm:		  $fnull=$F->{"null"} if ( exists $F->{"null"} );
+Whipple/ApacheHandlers/Search.pm:		  $fid=$F->{"id"};
+Whipple/ApacheHandlers/Search.pm:			   map { "(Mode = '".$codes_mo->ID($_)."')" }
+Whipple/ApacheHandlers/Search.pm:  $r->warn("Running query: ".$SQL);
+Whipple/ApacheHandlers/Search.pm:  my $qh=$db->prepare($SQL);
+Whipple/ApacheHandlers/Search.pm:      my $err=$db->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("compile_search: compile error:".$err);
+Whipple/ApacheHandlers/Search.pm:	$r->log_error("compile_search: query:".$SQL);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:  my $nfound=$qh->execute;
+Whipple/ApacheHandlers/Search.pm:  if((not $nfound) and ($qh->err))
+Whipple/ApacheHandlers/Search.pm:      my $err=$db->errstr;
+Whipple/ApacheHandlers/Search.pm:      $r->log_error("compile_search: query run error".$err);
+Whipple/ApacheHandlers/Search.pm:      $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:      $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:      $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			  whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Search.pm:				       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	$db->rollback;
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:  $db->Search->update_haver_suid('t',$sid,$uid);
+Whipple/ApacheHandlers/Search.pm:  $db->commit;
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Error",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:    my $search_name=$row->{"search_name"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_criteria=$row->{"have_criteria"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_results=$row->{"have_results"};
+Whipple/ApacheHandlers/Search.pm:    my $search_save=$row->{"save"};
+Whipple/ApacheHandlers/Search.pm:    my $search_timestamp=$row->{"timestamp"};
+Whipple/ApacheHandlers/Search.pm:    if($r->method_number == M_POST)
+Whipple/ApacheHandlers/Search.pm:	push(@HTML,'<H2>Search - <I>'.escape_html($search_name).'</I></H2>');
+Whipple/ApacheHandlers/Search.pm:#    $r->warn("Search save = ".$search_save);
+Whipple/ApacheHandlers/Search.pm:	my $db_searchres=$db->SearchResults;
+Whipple/ApacheHandlers/Search.pm:	if(not $db_searchres->summary($sid))
+Whipple/ApacheHandlers/Search.pm:	    my $err=$db_searchres->errstr;
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("run_search: error getting search results:".$err);
+Whipple/ApacheHandlers/Search.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:				whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Search.pm:					     -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:	my $row=$db_searchres->fetchrow_arrayref;
+Whipple/ApacheHandlers/Search.pm:	my $nfound=$row->[0];
+Whipple/ApacheHandlers/Search.pm:	my $duration=$row->[1];
+Whipple/ApacheHandlers/Search.pm:    $r->no_cache(1) if($r->method_number != M_POST);
+Whipple/ApacheHandlers/Search.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:    $r->print(whipple_page(-title   => "Search: criteria",
+Whipple/ApacheHandlers/Search.pm:			   -body    => join("\n",@HTML)));
+Whipple/ApacheHandlers/Search.pm:    my $runno     = $runentry->{"run_no"};
+Whipple/ApacheHandlers/Search.pm:    my $utc_date  = $runentry->{"utc_date"};
+Whipple/ApacheHandlers/Search.pm:    my $offrunno   = $runentry->{"off_run_no"};
+Whipple/ApacheHandlers/Search.pm:    my $n2runno    = $runentry->{"n2_run_no"};
+Whipple/ApacheHandlers/Search.pm:    my $n2short   = substr($n2run,-4,4);
+Whipple/ApacheHandlers/Search.pm:    $command =~ s/\$\{(.*?)\}/$runentry->{$1}/ge;
+Whipple/ApacheHandlers/Search.pm:		   "trk"  => 'lynx -auth=$auth -source http://veritas.astro.ucla.edu/db/redirect/log/logs_$YEAR/d$YEARSHORT$MONTH/d$UTSHORT.log_10 >> output.txt',
+Whipple/ApacheHandlers/Search.pm:		   "pair" => 'lynx -auth=$auth -source http://veritas.astro.ucla.edu/db/redirect/log/logs_$YEAR/d$YEARSHORT$MONTH/d$UTSHORT.log_10 >> output.txt',
+Whipple/ApacheHandlers/Search.pm:		      '<P class="warn">The url "'.$r->uri,
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,whipple_page(-title   => "Not Found",
+Whipple/ApacheHandlers/Search.pm:						   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $codes_mo=$db->Descriptor->get("Mode_Codes");
+Whipple/ApacheHandlers/Search.pm:    my $codes_sq=$db->Descriptor->get("Sky_Codes");
+Whipple/ApacheHandlers/Search.pm:    my $include_off = $export_options->{"include_off"};
+Whipple/ApacheHandlers/Search.pm:    my $include_n2  = $export_options->{"include_n2"};;
+Whipple/ApacheHandlers/Search.pm:    my $off_as_trk  = $export_options->{"off_as_trk"};;
+Whipple/ApacheHandlers/Search.pm:      sort({ ( $info->{$a}->{"utc_date"} eq $info->{$b}->{"utc_date"} ) ?
+Whipple/ApacheHandlers/Search.pm:	     ( $info->{$a}->{"run_no"} <=> $info->{$b}->{"run_no"} ) :
+Whipple/ApacheHandlers/Search.pm:	     ( $info->{$a}->{"utc_date"} cmp $info->{$b}->{"utc_date"} ) }
+Whipple/ApacheHandlers/Search.pm:    if(($include_n2)&&(exists($Format->{"n2"})))
+Whipple/ApacheHandlers/Search.pm:	    my $i=$info->{$run_id};
+Whipple/ApacheHandlers/Search.pm:	    my $date=$i->{'utc_date'};
+Whipple/ApacheHandlers/Search.pm:	    $N2Files{$date}->{$i->{'n2_run_no'}}=$i
+Whipple/ApacheHandlers/Search.pm:	      if(exists $i->{'n2_run_no'});
+Whipple/ApacheHandlers/Search.pm:		my $rinfo=$N2Files{$ut}->{$run};
+Whipple/ApacheHandlers/Search.pm:		my $format=expand_format_command($Format->{"n2"},$rinfo);
+Whipple/ApacheHandlers/Search.pm:	my $i=$info->{$run_id};
+Whipple/ApacheHandlers/Search.pm:	my $date=$i->{'utc_date'};
+Whipple/ApacheHandlers/Search.pm:	$Files{$date}->{$i->{'run_no'}}=$i
+Whipple/ApacheHandlers/Search.pm:	  if(exists $i->{'run_no'});
+Whipple/ApacheHandlers/Search.pm:	    next if (not exists $Files{$ut}->{$run});
+Whipple/ApacheHandlers/Search.pm:	    my $rinfo=$Files{$ut}->{$run};
+Whipple/ApacheHandlers/Search.pm:	    $rinfo->{'mode_text'} = $codes_mo->Val($rinfo->{'mode'});
+Whipple/ApacheHandlers/Search.pm:	    $rinfo->{'sky_q_text'} = $codes_sq->Val($rinfo->{'sky_q'});
+Whipple/ApacheHandlers/Search.pm:	    if((not $off_as_trk) && (exists $rinfo->{'off_run_no'}) &&
+Whipple/ApacheHandlers/Search.pm:	       (exists $Files{$ut}->{$rinfo->{'off_run_no'}}) &&
+Whipple/ApacheHandlers/Search.pm:	       (exists($Format->{"pair"})))
+Whipple/ApacheHandlers/Search.pm:		$format=expand_format_command($Format->{"pair"},$rinfo);
+Whipple/ApacheHandlers/Search.pm:		delete $Files{$ut}->{$rinfo->{'off_run_no'}};
+Whipple/ApacheHandlers/Search.pm:	    elsif((not $off_as_trk) && (exists $rinfo->{'off_run_no'}) &&
+Whipple/ApacheHandlers/Search.pm:		  ($include_off) && (exists($Format->{"pair"})))
+Whipple/ApacheHandlers/Search.pm:		$format=expand_format_command($Format->{"pair"},$rinfo);
+Whipple/ApacheHandlers/Search.pm:	    elsif(exists($Format->{"trk"}))
+Whipple/ApacheHandlers/Search.pm:		$format=expand_format_command($Format->{"trk"},$rinfo);
+Whipple/ApacheHandlers/Search.pm:	    $Files{$ut}->{$run}->{"__command"} = $format;
+Whipple/ApacheHandlers/Search.pm:	    push(@ResTable,$Files{$ut}->{$run}->{"__command"})
+Whipple/ApacheHandlers/Search.pm:	      if (exists $Files{$ut}->{$run}->{"__command"});
+Whipple/ApacheHandlers/Search.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:    $r->content_type("text/plain");
+Whipple/ApacheHandlers/Search.pm:    $r->print($TEXT);
+Whipple/ApacheHandlers/Search.pm:    my $codes_mo=$db->Descriptor->get("Mode_Codes");
+Whipple/ApacheHandlers/Search.pm:    my $codes_sq=$db->Descriptor->get("Sky_Codes");
+Whipple/ApacheHandlers/Search.pm:      sort({ ( $info->{$a}->{"utc_date"} eq $info->{$b}->{"utc_date"} ) ?
+Whipple/ApacheHandlers/Search.pm:	     ( $info->{$a}->{"run_no"} <=> $info->{$b}->{"run_no"} ) :
+Whipple/ApacheHandlers/Search.pm:	     ( $info->{$a}->{"utc_date"} cmp $info->{$b}->{"utc_date"} ) }
+Whipple/ApacheHandlers/Search.pm:	my $i=$info->{$run_id};
+Whipple/ApacheHandlers/Search.pm:	my ($y,$m,$d)=split(/-/,$i->{'utc_date'});
+Whipple/ApacheHandlers/Search.pm:	$logurl =~ s/_10$// if ( $i->{'utc_date'} lt '1995-10-19' );
+Whipple/ApacheHandlers/Search.pm:	my @Fields=($i->{'source_id'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'run_no'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'source_name'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'utc_date'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'utc_time'},
+Whipple/ApacheHandlers/Search.pm:		    $codes_mo->Val($i->{'mode'}),
+Whipple/ApacheHandlers/Search.pm:		    $i->{'duration'},
+Whipple/ApacheHandlers/Search.pm:		    $codes_sq->Val($i->{'sky_q'}),
+Whipple/ApacheHandlers/Search.pm:		    $i->{'starting_el'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'off_run_no'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'n2_run_no'},
+Whipple/ApacheHandlers/Search.pm:		    $i->{'comment'},
+Whipple/ApacheHandlers/Search.pm:	if(defined $i->{'starting_el'})
+Whipple/ApacheHandlers/Search.pm:	    $elevation_sum += $i->{'starting_el'};
+Whipple/ApacheHandlers/Search.pm:	$total_time_inmin += $i->{'duration'};
+Whipple/ApacheHandlers/Search.pm:	  '<H2>Search Results - <I>'.escape_html($search_name).'</I></H2>';
+Whipple/ApacheHandlers/Search.pm:	my $db_searchres=$db->SearchResults;
+Whipple/ApacheHandlers/Search.pm:	if(not $db_searchres->summary($sid))
+Whipple/ApacheHandlers/Search.pm:	    my $err=$db_searchres->errstr;
+Whipple/ApacheHandlers/Search.pm:	    $r->log_error("run_search: error getting search results:".$err);
+Whipple/ApacheHandlers/Search.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:				whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Search.pm:					     -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	$db->commit;
+Whipple/ApacheHandlers/Search.pm:	my $row=$db_searchres->fetchrow_arrayref;
+Whipple/ApacheHandlers/Search.pm:	my $nfound=$row->[0];
+Whipple/ApacheHandlers/Search.pm:	my $duration=$row->[1];
+Whipple/ApacheHandlers/Search.pm:	    my $prevoffset=$offset-$limit;
+Whipple/ApacheHandlers/Search.pm:	my $npages=int(($nfound+$limit-1)/$limit);
+Whipple/ApacheHandlers/Search.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:    $r->print(whipple_page(-title   => "Search: results",
+Whipple/ApacheHandlers/Search.pm:			   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_sr=$db->SearchResults;
+Whipple/ApacheHandlers/Search.pm:	$query_result=$db_sr->$query($sid);
+Whipple/ApacheHandlers/Search.pm:	$query_result=$db_sr->$query($sid,int($limit),int($offset));
+Whipple/ApacheHandlers/Search.pm:    if((not($query_result)) and ($db_sr->err))
+Whipple/ApacheHandlers/Search.pm:	my $err=$db_sr->errstr;
+Whipple/ApacheHandlers/Search.pm:	$r->log_error("start_results: ".$query." error getting search results:".$err);
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    $db->commit;
+Whipple/ApacheHandlers/Search.pm:    while(defined($row=$db_sr->fetchrow_hashref))
+Whipple/ApacheHandlers/Search.pm:	my $run_id=delete $row->{"run_id"};
+Whipple/ApacheHandlers/Search.pm:	next if ((not exists $results_hash->{$run_id}) && (not $extend));
+Whipple/ApacheHandlers/Search.pm:	    $results_hash->{$run_id}->{$key} = $row->{$key};
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Error",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:    my $search_name=$row->{"search_name"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_criteria=$row->{"have_criteria"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_results=$row->{"have_results"};
+Whipple/ApacheHandlers/Search.pm:    my $search_save=$row->{"save"};
+Whipple/ApacheHandlers/Search.pm:    my $search_timestamp=$row->{"timestamp"};
+Whipple/ApacheHandlers/Search.pm:	if($r->method_number == M_POST)
+Whipple/ApacheHandlers/Search.pm:		$db->rollback;
+Whipple/ApacheHandlers/Search.pm:		$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:		$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:		$r->custom_response(HTTP_BAD_REQUEST,
+Whipple/ApacheHandlers/Search.pm:				    whipple_page(-title   => "Invalid form",
+Whipple/ApacheHandlers/Search.pm:						 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:		     '<H2>Export Results - <I>'.
+Whipple/ApacheHandlers/Search.pm:	    #$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->print(whipple_page(-title   => "Export Results",
+Whipple/ApacheHandlers/Search.pm:				   -body    => join("\n",@HTML)));
+Whipple/ApacheHandlers/Search.pm:		      '<P class="warn">The url "'.$r->uri,
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,whipple_page(-title   => "Not Found",
+Whipple/ApacheHandlers/Search.pm:						   -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	      '<H2>Search Results - <I>'.escape_html($search_name).'</I></H2>';
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->print(whipple_page(-title   => "Search: results",
+Whipple/ApacheHandlers/Search.pm:			       -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:	$db->rollback;
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(HTTP_BAD_REQUEST,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Invalid form",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    if(not $db_search->update_name_save_suid($name,$save,$sid,$uid))
+Whipple/ApacheHandlers/Search.pm:	my $err=$db_search->errstr;
+Whipple/ApacheHandlers/Search.pm:	$r->log_error("parse_profile_form: database returned error".$err);
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Database Error",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:	$db->rollback;
+Whipple/ApacheHandlers/Search.pm:    $db->commit;
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	$r->custom_response(NOT_FOUND,
+Whipple/ApacheHandlers/Search.pm:			    whipple_page(-title   => "Error",
+Whipple/ApacheHandlers/Search.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Search.pm:    my $db_search=$db->Search;
+Whipple/ApacheHandlers/Search.pm:    if($r->method_number == M_POST)
+Whipple/ApacheHandlers/Search.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	$r->headers_out->add("Location",$searchpath."/run/".$sid);
+Whipple/ApacheHandlers/Search.pm:    my $search_name=$row->{"search_name"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_criteria=$row->{"have_criteria"};
+Whipple/ApacheHandlers/Search.pm:    my $search_have_results=$row->{"have_results"};
+Whipple/ApacheHandlers/Search.pm:    my $search_save=$row->{"save"};
+Whipple/ApacheHandlers/Search.pm:    my $search_timestamp=$row->{"timestamp"};
+Whipple/ApacheHandlers/Search.pm:	 'periodically. If you want to keep this search, to re-run at a later',
+Whipple/ApacheHandlers/Search.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Search.pm:    $r->print(whipple_page(-title   => "Search: profile",
+Whipple/ApacheHandlers/Search.pm:			   -body    => join("\n",@HTML)));
+Whipple/ApacheHandlers/Search.pm:			  '<P class="warn">The url "'.$r->uri,
+Whipple/ApacheHandlers/Search.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Search.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Search.pm:	    $r->custom_response(NOT_FOUND,whipple_page(-title   => "Not Found",
+Whipple/ApacheHandlers/Search.pm:						       -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:    "desc"    => 'First Date (yyyy-mm-dd)',
+Whipple/ApacheHandlers/Summary.pm:    "blank"   => '1900-01-01',
+Whipple/ApacheHandlers/Summary.pm:    "desc"    => "Final Date (yyyy-mm-dd)",
+Whipple/ApacheHandlers/Summary.pm:    $dark_runs = $db->Misc->GetDarkRuns()
+Whipple/ApacheHandlers/Summary.pm:	my $err=$db->Misc->errstr;
+Whipple/ApacheHandlers/Summary.pm:	$r->log_error("load_dark_runs: error dark run catalog: ".$err);
+Whipple/ApacheHandlers/Summary.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Summary.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Summary.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Summary.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:    $obs_seasons = $db->Misc->GetObservingSeasons()
+Whipple/ApacheHandlers/Summary.pm:	my $err=$db->Misc->errstr;
+Whipple/ApacheHandlers/Summary.pm:	$r->log_error("load_dark_runs: error observing season catalog: ".$err);
+Whipple/ApacheHandlers/Summary.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Summary.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Summary.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Summary.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:      $basepath."?date_l_val=".$dates->[0]."&date_u_val=".$dates->[1];
+Whipple/ApacheHandlers/Summary.pm:    my $source_catalog = $db->SourceCatalog->GetCatalog();
+Whipple/ApacheHandlers/Summary.pm:	my $err=$db->SourceCatalog->errstr;
+Whipple/ApacheHandlers/Summary.pm:	$r->log_error("generate_summary: error getting catalog: ".$err);
+Whipple/ApacheHandlers/Summary.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Summary.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Summary.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Summary.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:	my $id=$F->{"id"};
+Whipple/ApacheHandlers/Summary.pm:	$def_val=$F->{"blank"} if ( exists $F->{"blank"} );
+Whipple/ApacheHandlers/Summary.pm:	my $def_op=$F->{"op"};
+Whipple/ApacheHandlers/Summary.pm:	$def_op=$def_op->[0] if ( ref $def_op );
+Whipple/ApacheHandlers/Summary.pm:	$allownull=$F->{"null"} if ( exists $F->{"null"} );
+Whipple/ApacheHandlers/Summary.pm:	   ((ref $F->{"op"}) and (not exists $form_fields{$id."_op"})))
+Whipple/ApacheHandlers/Summary.pm:	    $db->rollback;
+Whipple/ApacheHandlers/Summary.pm:	    $r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:	    $r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Summary.pm:	    $r->custom_response(HTTP_BAD_REQUEST,
+Whipple/ApacheHandlers/Summary.pm:				whipple_page(-title   => "Invalid form",
+Whipple/ApacheHandlers/Summary.pm:					     -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:	$op=$form_fields{$id."_op"} if (ref $F->{"op"});
+Whipple/ApacheHandlers/Summary.pm:	$search_components{$id} = [ $F->{"field"}, $op, $val ];
+Whipple/ApacheHandlers/Summary.pm:    my $ldate = $search_components{"date_l"}->[2];
+Whipple/ApacheHandlers/Summary.pm:    my $udate = $search_components{"date_u"}->[2];
+Whipple/ApacheHandlers/Summary.pm:    my $result = $db->RunInfo->summary_dates($ldate,$udate);
+Whipple/ApacheHandlers/Summary.pm:    if((not($result)) and ($db->RunInfo->err))
+Whipple/ApacheHandlers/Summary.pm:	my $err=$db->RunInfo->errstr;
+Whipple/ApacheHandlers/Summary.pm:	$r->log_error("generate_summary: error getting results: ".$err);
+Whipple/ApacheHandlers/Summary.pm:	$r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:	$r->err_headers_out->add("Content-type","text/html");
+Whipple/ApacheHandlers/Summary.pm:	$r->custom_response(SERVER_ERROR,
+Whipple/ApacheHandlers/Summary.pm:			    whipple_page(-title   => "Query Error",
+Whipple/ApacheHandlers/Summary.pm:					 -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:    $db->commit;
+Whipple/ApacheHandlers/Summary.pm:    while(defined($row=$db->RunInfo->fetchrow_hashref))
+Whipple/ApacheHandlers/Summary.pm:	my $source = $row->{"source_id"};
+Whipple/ApacheHandlers/Summary.pm:	my $sky =    $row->{"sky_q"};
+Whipple/ApacheHandlers/Summary.pm:	my $runs =   $row->{"runs"};
+Whipple/ApacheHandlers/Summary.pm:	my $time =   $row->{"time"};
+Whipple/ApacheHandlers/Summary.pm:	$source_results{$source}->[$skyc] += $time;
+Whipple/ApacheHandlers/Summary.pm:	$source_results{$source}->[4]     += $time;
+Whipple/ApacheHandlers/Summary.pm:	$source_results{$source}->[5]     += $time
+Whipple/ApacheHandlers/Summary.pm:	my @Fields=("", "-", "-", "-", "-", "-", "-", "", "");
+Whipple/ApacheHandlers/Summary.pm:	$Fields[1] = $source_catalog->{$source}->{"source_name"}
+Whipple/ApacheHandlers/Summary.pm:	  if ( exists $source_catalog->{$source} );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[2] = sprintf("%.1f",$results->[0]/60) if ( $results->[0] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[3] = sprintf("%.1f",$results->[1]/60) if ( $results->[1] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[4] = sprintf("%.1f",$results->[2]/60) if ( $results->[2] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[5] = sprintf("%.1f",$results->[3]/60) if ( $results->[3] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[6] = sprintf("%.1f",$results->[5]/60) if ( $results->[5] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[7] = sprintf("%.1f",$results->[4]/60) if ( $results->[4] );
+Whipple/ApacheHandlers/Summary.pm:	$Fields[8] = sprintf("%.1f",$results->[4]/$total[4]*100)
+Whipple/ApacheHandlers/Summary.pm:	  if ( ( $results->[4] ) && ( $total[4] ) );
+Whipple/ApacheHandlers/Summary.pm:			 $dark_runs->[$dr_number-1],$dr_number-1);
+Whipple/ApacheHandlers/Summary.pm:			 $dark_runs->[$dr_number+1],$dr_number+1);
+Whipple/ApacheHandlers/Summary.pm:    $r->no_cache(1);
+Whipple/ApacheHandlers/Summary.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Summary.pm:    $r->print(whipple_page(-title   => "Data Summary Results",
+Whipple/ApacheHandlers/Summary.pm:			   -body    => $HTML));
+Whipple/ApacheHandlers/Summary.pm:	my $id=$F->{"id"};
+Whipple/ApacheHandlers/Summary.pm:	my $label=$F->{"desc"};
+Whipple/ApacheHandlers/Summary.pm:	my $ops=$F->{"op"};
+Whipple/ApacheHandlers/Summary.pm:	my $nulls=(exists $F->{"null"})?$F->{"null"}:0;
+Whipple/ApacheHandlers/Summary.pm:	$vals=$F->{"options"} if ( exists $F->{"options"} );
+Whipple/ApacheHandlers/Summary.pm:	$zval=$F->{"zeroval"} if ( exists $F->{"zeroval"} );
+Whipple/ApacheHandlers/Summary.pm:	$zop=$F->{"op"} if ( (exists $F->{"op"}) and (not ref $F->{"op"}) );
+Whipple/ApacheHandlers/Summary.pm:	$zop=$F->{"op"}->[0] if ( (exists $F->{"op"}) and (ref $F->{"op"}) );
+Whipple/ApacheHandlers/Summary.pm:	    $size = $F->{"size"} if (exists $F->{"size"});
+Whipple/ApacheHandlers/Summary.pm:      sprintf("%04d-%02d-%02d",$ltime[5]+1900,$ltime[4]+1,$ltime[3]);
+Whipple/ApacheHandlers/Summary.pm:      { last if(($UTC_DATE cmp $dark_runs->[$i]->[0])<=0); }
+Whipple/ApacheHandlers/Summary.pm:    my $this_dr_url = make_query_url($generate_path,$dark_runs->[$i-1],$i-1);
+Whipple/ApacheHandlers/Summary.pm:    my $last_dr_url = make_query_url($generate_path,$dark_runs->[$i-2],$i-2);
+Whipple/ApacheHandlers/Summary.pm:      { last if(($UTC_DATE cmp $obs_seasons->[$i]->[0])<=0); }
+Whipple/ApacheHandlers/Summary.pm:    my $this_os_url = make_query_url($generate_path,$obs_seasons->[$i-1]);
+Whipple/ApacheHandlers/Summary.pm:    my $last_os_url = make_query_url($generate_path,$obs_seasons->[$i-2]);
+Whipple/ApacheHandlers/Summary.pm:    $r->content_type("text/html");
+Whipple/ApacheHandlers/Summary.pm:    $r->print(whipple_page(-title   => "Data Summary",
+Whipple/ApacheHandlers/Summary.pm:			   -body    => join("\n",@HTML)));
+Whipple/WhipDB/ArchInfo.pm:    return undef if(not $self->get_last_archive);
+Whipple/WhipDB/ArchInfo.pm:    my $stuff=$self->fetchrow_arrayref;
+Whipple/WhipDB/ArchInfo.pm:    return $stuff->[0];
+Whipple/WhipDB/Derived.pm:    $self->{"db"}=$db;
+Whipple/WhipDB/Derived.pm:    my $Methods=$self->SQLMethods;
+Whipple/WhipDB/Derived.pm:	$self->{"method"}->{$method_name}=
+Whipple/WhipDB/Derived.pm:	  $db->prepare($Methods->{$method_name}) || die $db->errstr;
+Whipple/WhipDB/Derived.pm:    my $cursors=$self->{"
+Whipple/WhipDB/Descriptor.pm:    while(defined($line=$dbhandle->fetchrow_hashref))
+Whipple/WhipDB/Descriptor.pm:	my $ID=$line->{"id"};
+Whipple/WhipDB/Descriptor.pm:	my $Val=$line->{"val"};
+Whipple/WhipDB/Descriptor.pm:	$self->{"ID"}->[$ID]=$Val;
+Whipple/WhipDB/Descriptor.pm:	$self->{"Val"}->{$Val}=$ID;
+Whipple/WhipDB/Descriptor.pm:	    $self->{"Item"}->[$ID]->{$_}=$line->{$_};
+Whipple/WhipDB/Descriptor.pm:    if($dbhandle->err)
+Whipple/WhipDB/Descriptor.pm:	$dbhandle->rollback;
+Whipple/WhipDB/Descriptor.pm:    $dbhandle->finish;
+Whipple/WhipDB/Descriptor.pm:    $dbhandle->commit;
+Whipple/WhipDB/Descriptor.pm:    return undef unless (exists $self->{"Val"}->{$Val});
+Whipple/WhipDB/Descriptor.pm:    return $self->{"Val"}->{$Val};
+Whipple/WhipDB/Descriptor.pm:    return undef unless (defined $self->{"ID"}->[$ID]);
+Whipple/WhipDB/Descriptor.pm:    return $self->{"ID"}->[$ID];
+Whipple/WhipDB/Descriptor.pm:    return undef unless (defined $self->{"Item"}->[$ID]);
+Whipple/WhipDB/Descriptor.pm:    return $self->{"Item"}->[$ID];
+Whipple/WhipDB/Descriptor.pm:    return keys %{$self->{"Val"}};
+Whipple/WhipDB/Descriptor.pm:    $self->{"db"}=$db;
+Whipple/WhipDB/Descriptor.pm:    $self->{"handle"}=
+Whipple/WhipDB/Descriptor.pm:      $self->{"db"}->prepare("SELECT * FROM ".$descriptor);
+Whipple/WhipDB/Descriptor.pm:    return undef if(not $self->{"handle"});
+Whipple/WhipDB/Descriptor.pm:    return undef if(not $self->{"handle"}->execute);
+Whipple/WhipDB/Descriptor.pm:  $self->{"db"}->commit;
+Whipple/WhipDB/Descriptor.pm:  $self->{"db"}->commit;
+Whipple/WhipDB/Descriptor.pm:    my $db=$self->{"db"};
+Whipple/WhipDB/Descriptor.pm:    return $self->{"handle"}->$name(@_)
+Whipple/WhipDB/Descriptor.pm:      if ( defined $self->{"handle"} );
+Whipple/WhipDB/Descriptor.pm:    return $db->$name(@_);
+Whipple/WhipDB/Misc.pm:    return undef if(not $self->select_dr());
+Whipple/WhipDB/Misc.pm:    while(defined($stuff=$self->fetchrow_arrayref))
+Whipple/WhipDB/Misc.pm:    return undef if(not $self->select_os());
+Whipple/WhipDB/Misc.pm:    while(defined($stuff=$self->fetchrow_arrayref))
+Whipple/WhipDB/RunIdent.pm:    return undef if(not $self->select_run($run_no,$utc_date));
+Whipple/WhipDB/RunIdent.pm:    my $stuff=$self->fetchrow_arrayref;
+Whipple/WhipDB/RunIdent.pm:    return $stuff->[0];
+Whipple/WhipDB/RunIdent.pm:    my $ID=$self->GetID($run_no,$utc_date);
+Whipple/WhipDB/RunIdent.pm:    return undef if($self->err);
+Whipple/WhipDB/RunIdent.pm:    return undef if(not $self->insert_in_seq($run_no,$utc_date));
+Whipple/WhipDB/RunIdent.pm:    return $self->GetID($run_no,$utc_date);
+Whipple/WhipDB/RunInfo.pm:    return undef if(not $self->latest_run());
+Whipple/WhipDB/RunInfo.pm:    my $stuff=$self->fetchrow_arrayref;
+Whipple/WhipDB/RunInfo.pm:    return $stuff->[0];
+Whipple/WhipDB/Search.pm:			       ( SELECT CURRENT_TIMESTAMP - Age FROM 
+Whipple/WhipDB/SourceCatalog.pm:    return undef if(not $self->select_all());
+Whipple/WhipDB/SourceCatalog.pm:    while(defined($stuff=$self->fetchrow_hashref))
+Whipple/WhipDB/SourceCatalog.pm:	$catalog{$stuff->{"source_id"}} = $stuff;
+Whipple/WhipDB/TableAccess.pm:    $self->{"db"}=$db;
+Whipple/WhipDB/TableAccess.pm:    return int $handle->execute(@_);
+Whipple/WhipDB/TableAccess.pm:    my $db=$self->{"db"};
+Whipple/WhipDB/TableAccess.pm:    my $methods=$self->SQLMethods;
+Whipple/WhipDB/TableAccess.pm:    if(exists $methods->{$name})
+Whipple/WhipDB/TableAccess.pm:#print STDERR $methods->{$name},"\n";
+Whipple/WhipDB/TableAccess.pm:	if(not exists $self->{"method"}->{$name})
+Whipple/WhipDB/TableAccess.pm:	    $handle=$self->{"method"}->{$name}=
+Whipple/WhipDB/TableAccess.pm:	      $db->prepare($methods->{$name}) || die $db->errstr;
+Whipple/WhipDB/TableAccess.pm:	else { $handle=$self->{"method"}->{$name} };
+Whipple/WhipDB/TableAccess.pm:    return $Handles{ref $self}->$name(@_)
+Whipple/WhipDB/TableAccess.pm:    return $db->$name(@_);
+Whipple/WhipDB/UserProfile.pm:    return undef if(not $self->select_login($login));
+Whipple/WhipDB/UserProfile.pm:    my $stuff=$self->fetchrow_hashref;
+Whipple/WhipDB/UserProfile.pm:    return $stuff->{"uid"};
+Whipple/WhipDB/UserProfile.pm:    my $ID=$self->GetUID($login);
+Whipple/WhipDB/UserProfile.pm:    return undef if($self->err);
+Whipple/WhipDB/UserProfile.pm:    return undef if(not $self->insert_in_seq($login,undef));
+Whipple/WhipDB/UserProfile.pm:    return $self->GetUID($login);

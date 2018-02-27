@@ -1,0 +1,97 @@
+BODY {
+  background: #ffffd8; 
+  color: navy;
+}
+
+H1, H2, H3, H4, H5, H6 ,P, UL, LI, ADDRESS, TD, TR, TH, TABLE, CAPTION, FORM { 
+  color: navy 
+}; 
+
+TD {
+/*  padding: 1em;*/
+}
+
+FORM, P, HR, H3, H4, H5, H6, UL, BODY TABLE { 
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+H1, H2, H3, H4, H5, H6 { 
+  font-family: verdana, helvetica, arial, sans-serif;
+}
+
+A:hover { color: red }
+A:link  { color: darkred }
+A:visited { color: darkred }
+
+H1, H2 {
+  margin-left: 3%;
+  margin-right: 3%;
+  font-weight: bold;
+  text-align: left;
+  width: 98%;
+}
+
+.noindent {
+  margin-left: 0%;
+  margin-right: 0%;
+}
+
+.luminous {
+  background: cyan;
+  color: black;
+  font-weight: bold;
+}
+
+.warn {
+  color: darkred;
+}
+
+.trodd {
+}
+
+.treven {
+/*  background: #cccc99; */
+  background: #e5e5c2;
+}
+
+P {
+  text-align: justify;
+}
+
+ADDRESS {
+  display: block;
+  font-family: "times new roman", serif;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.8em;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+
+ADDRESS A:link { color: navy }
+ADDRESS A:visited { color: navy }
+
+.bar {
+  text-align: right;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #ffffd8; 
+  background: navy;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 0%;
+  margin-right: 0%;
+  border: none;
+  width: 98%;
+}
+
+H1.bar {
+  font-style: italic;
+}
+
+.bar A:link { color: #ffffd8 }
+.bar A:visited { color: #ffffd8 }

@@ -1,0 +1,2 @@
+#!/bin/bash
+cat cdinfo/sql* | awk '{print $0,";"}' | psql whipple
